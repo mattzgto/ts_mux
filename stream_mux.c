@@ -35,7 +35,7 @@ int main ()
 				num_read = read(vid_file, inbuffer, packet_length);
 			}
 			
-			fprintf(stdout, "%.*s", packet_length, inbuffer);
+			fprintf(stdout, "%.*s%c", packet_length, inbuffer, 0);
 			fflush(stdout);
 		}
 
@@ -46,7 +46,7 @@ int main ()
 			
 			if (num_read == packet_length)
 			{
-				fprintf(stdout, "%.*s", packet_length, inbuffer);
+				fprintf(stdout, "%.*s%c", packet_length, inbuffer, 0);
 				fflush(stdout);
 			}
 		}
