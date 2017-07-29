@@ -22,7 +22,7 @@ exitapp = False
 # Number of packets to insert each loop
 ts_packet_size = 188
 num_data_packets = 3
-num_video_packets = 1
+num_video_packets = 0
 #num_null_packets = 0
 #insert_null_when_theres_no_data = False
 

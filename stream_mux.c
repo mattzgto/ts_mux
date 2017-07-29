@@ -20,14 +20,16 @@ int main ()
 	const int num_data = 8;
 	const int ts_frame_pkt_length = 188;
 
-	// Counter
-	int i = 0;
-	int j = 0;
-	int num_read = 0;
+	// Counters
+	volatile int i = 0;
+	volatile int j = 0;
+	volatile int num_read  = 0;
+	volatile int num_to_read = ts_frame_pkt_length;
 
 	// Store what was read (1 byte at a time)
-	unsigned char inbuffer[ts_frame_pkt_length];
-
+	unsigned char videobuffer[ts_frame_pkt_length];
+	unsigned char databuffer[ts_frame_pkt_length];
+	
 	// Open the fifos
 	int vid_file;
 	int data_file;
@@ -43,31 +45,43 @@ int main ()
 			num_read = 0;
 			while (num_read != ts_frame_pkt_length)
 			{
-				num_read = read(vid_file, inbuffer, ts_frame_pkt_length);
+				num_read = read(vid_file, videobuffer, ts_frame_pkt_length);
 			}
-			
-			// Print these bytes out, interlaced with a '0' (to adapt to BladeRF API)
+
+			// Print these out
 			for (j = 0; j < ts_frame_pkt_length; j++)
 			{
-				fprintf(stdout, "%c%c", inbuffer[j], 0);
+				printf("%c", videobuffer[j]);
 			}
 		}
 
 		// Read and output data packets (non-blocking)
 		for (i = 0; i < num_data; i++)
 		{
-			// Read in 188 bytes
-			num_read = read(data_file, inbuffer, ts_frame_pkt_length);
-			
-			if (num_read == ts_frame_pkt_length)
+			// Read in 188 bytes (ideally)
+			num_read = read(data_file, &databuffer[ts_frame_pkt_length - num_to_read], num_to_read);
+
+			// Received a full packet
+			if (num_read == num_to_read)
 			{
-				// Print these bytes out, interlaced with a '0' (to adapt to BladeRF API)
+				// Print these out
 				for (j = 0; j < ts_frame_pkt_length; j++)
 				{
-					fprintf(stdout, "%c%c", inbuffer[j], 0);
+					printf("%c", databuffer[j]);
 				}
+
+				// Reset
+				num_to_read = ts_frame_pkt_length;
+			}
+			// Received a partial packet
+			else if (num_read > 0) // not -1 or 0
+			{
+				// Only read in some next time
+				num_to_read -= num_read;
 			}
 		}
+
+		// Flush STDOUT
 		fflush(stdout);
 	}
 
