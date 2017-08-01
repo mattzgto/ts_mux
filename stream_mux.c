@@ -17,7 +17,7 @@ int main ()
 	const char* vid_fifo = "video.fifo";
 	const char* data_fifo = "data.fifo";
 	const int num_vid = 2;
-	const int num_data = 8;
+	const int num_data = 5;
 	const int ts_frame_pkt_length = 188;
 
 	// Counters
@@ -54,6 +54,9 @@ int main ()
 				printf("%c", videobuffer[j]);
 			}
 		}
+
+		// Flush STDOUT
+		fflush(stdout);
 
 		// Read and output data packets (non-blocking)
 		for (i = 0; i < num_data; i++)
