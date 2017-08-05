@@ -16,8 +16,8 @@ int main ()
 	// Constants
 	const char* vid_fifo = "video.fifo";
 	const char* data_fifo = "data.fifo";
-	const int num_vid = 2;
-	const int num_data = 5;
+	const int num_vid = 1;
+	const int num_data = 2;
 	const int ts_frame_pkt_length = 188;
 
 	// Counters
